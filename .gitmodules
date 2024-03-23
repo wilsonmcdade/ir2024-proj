@@ -1,0 +1,6 @@
+[submodule "TILDE"]
+	path = TILDE
+	url = https://github.com/wilsonmcdade/TILDE
+[submodule "trec_eval"]
+	path = trec_eval
+	url = https://github.com/usnistgov/trec_eval
