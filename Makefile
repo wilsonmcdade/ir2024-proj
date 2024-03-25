@@ -13,7 +13,7 @@ install:
 get_collection:
 	wget https://msmarco.z22.web.core.windows.net/msmarcoranking/collection.tar.gz
 	tar -xvf collection.tar.gz
-	mv collection.tsv TILDE/data/collection
+	mv collection.tsv TILDE/data/collection.tsv
 
 test:
 	./search information retrieval
