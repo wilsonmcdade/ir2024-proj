@@ -16,3 +16,6 @@
     * This is the main unit being experimented on in TILDE. There have been no changes to the logic of the program but the main inference logic has been moved around so we can run an inference with default values and without running the inference.py file itself.
 * Makefile
     * We have a Makefile that can do some predefined tasks like installing the system, running an index using TILDE, training TILDE (unused), and collecting datasets from remote sources.
+
+## Weights and Data
+* All necessary weights and data can be acquired with `make install` and `make get_collection`. These steps are both part of the normal installation process.
