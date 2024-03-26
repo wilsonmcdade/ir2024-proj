@@ -1,12 +1,10 @@
 install:
 	python3 -m venv venv;\
-	. venv/bin/activate
+	. venv/bin/activate;\
+	pip install -r requirements.txt
 
 	git submodule init
 	git submodule update
-	
-	cd TILDE/ ;\
-	pip install -r requirements.txt
 
 	cd trec_eval/; make
 
