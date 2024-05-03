@@ -41,21 +41,21 @@ def make_graphs(results):
 
     plt.subplot(1, 2, 1)  # 1 row, 2 columns, 1st subplot
     for label, grp in results.groupby('Set'):
-        plt.plot(grp['Alpha'], grp['MAP@10'], label=f'Set {label}', marker='o')
-    plt.title('Line Graph of MAP@10')
+        plt.plot(grp['Alpha'], grp['MAP'], label=f'{label}' if label == 'Baseline' else f'Set {label}', marker='o')
+    plt.title('MAP')
     plt.xlabel('Alpha')
-    plt.ylabel('MAP@10')
+    plt.ylabel('MAP')
     plt.legend()
 
     plt.subplot(1, 2, 2)  # 1 row, 2 columns, 2nd subplot
     for label, grp in results.groupby('Set'):
-        plt.plot(grp['Alpha'], grp['NDCG@10'], label=f'Set {label}', marker='o')
-    plt.title('Line Graph of NDCG@10')
+        plt.plot(grp['Alpha'], grp['NDCG'], label=f'{label}' if label == 'Baseline' else f'Set {label}', marker='o')
+    plt.title('NDCG')
     plt.xlabel('Alpha')
-    plt.ylabel('NDCG@10')
+    plt.ylabel('NDCG')
     plt.legend()
 
-    plt.savefig('results.png')
+    plt.savefig('results_norm.png')
 
     plt.tight_layout()
     plt.show()
@@ -68,12 +68,13 @@ def perform_inference(queries, run, alpha, set_name):
 
 def main(args):
 
-    df_columns = ["MAP@10", "NDCG@10", "Alpha", "Set"]
+    df_columns = ["MAP", "NDCG", "Alpha", "Set"]
     results = pd.DataFrame(columns = df_columns)
 
     queries = load_queries(args.run_path+"queries/DL2019-queries.tsv")
 
     # Split queries into named sets
+    baseline    = queries
     query_set_a = {k: v for k, v in queries.items() if len(v.split()) <= 4}
     query_set_b = {k: v for k, v in queries.items() if len(v.split()) == 5}
     query_set_c = {k: v for k, v in queries.items() if len(v.split()) == 6}
@@ -85,8 +86,13 @@ def main(args):
     rand_query_c = random.choice(list(query_set_c.values()))
     rand_query_d = random.choice(list(query_set_d.values()))
 
-    query_sets = [query_set_a, query_set_b, query_set_c, query_set_d]
-    query_sets_names = ["A", "B", "C", "D"]
+    print(rand_query_a)
+    print(rand_query_b)
+    print(rand_query_c)
+    print(rand_query_d)
+
+    query_sets = [baseline, query_set_a, query_set_b, query_set_c, query_set_d]
+    query_sets_names = ["Baseline", "A", "B", "C", "D"]
 
     run = load_run(args.run_path+"runs/run.trec2019-bm25.res")
 
@@ -99,14 +105,14 @@ def main(args):
 
             eval = evaluate(run_file_path = build_run_name(alpha, query_sets_names[i]),
                     qrel_path =     args.run_path+"qrels/2019qrels-pass.txt", 
-                    metrics =       {'map_cut.10', 'ndcg_cut.10'}).values()
+                    metrics =       {'map', 'ndcg'}).values()
 
             result = pd.DataFrame(list(eval))
             print("Set " + query_sets_names[i] + ":")
             print(result.describe())
 
-            results = pd.concat([pd.DataFrame([[result["map_cut_10"].mean(), 
-                                               result["ndcg_cut_10"].mean(), 
+            results = pd.concat([pd.DataFrame([[result["map"].mean(), 
+                                               result["ndcg"].mean(), 
                                                alpha, 
                                                query_sets_names[i]]], 
                                                columns=df_columns), results], ignore_index=True)
